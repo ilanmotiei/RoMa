@@ -1,6 +1,6 @@
 from PIL import Image
 import numpy as np
-
+import torch
 import os
 
 from tqdm import tqdm
@@ -32,7 +32,7 @@ class HpatchesHomogBenchmark:
     def convert_coordinates(self, im_A_coords, im_A_to_im_B, wq, hq, wsup, hsup):
         offset = 0.5  # Hpatches assumes that the center of the top-left pixel is at [0,0] (I think)
         im_A_coords = (
-            np.stack(
+            torch.stack(
                 (
                     wq * (im_A_coords[..., 0] + 1) / 2,
                     hq * (im_A_coords[..., 1] + 1) / 2,
@@ -42,7 +42,7 @@ class HpatchesHomogBenchmark:
             - offset
         )
         im_A_to_im_B = (
-            np.stack(
+            torch.stack(
                 (
                     wsup * (im_A_to_im_B[..., 0] + 1) / 2,
                     hsup * (im_A_to_im_B[..., 1] + 1) / 2,
@@ -78,8 +78,8 @@ class HpatchesHomogBenchmark:
                 )
                 try:
                     H_pred, inliers = cv2.findHomography(
-                        pos_a,
-                        pos_b,
+                        pos_a.cpu().numpy(),
+                        pos_b.cpu().numpy(),
                         method = cv2.RANSAC,
                         confidence = 0.99999,
                         ransacReprojThreshold = 3 * min(w2, h2) / 480,
