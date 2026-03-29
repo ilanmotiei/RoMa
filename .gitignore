@@ -8,5 +8,6 @@ workspace*
 jobs/*
 *ignore_me*
 *.pth
+*.onnx
 wandb*
 results/*
